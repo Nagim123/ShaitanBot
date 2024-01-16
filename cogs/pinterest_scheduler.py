@@ -14,7 +14,7 @@ class PinterestScheduler(commands.Cog):
     
     @commands.command()
     async def add_pin_board(self, ctx: commands.Context) -> None:
-        pass
+        ctx.reply("Доска успешно добавлена!")
 
     @commands.command()
     async def remove_pin_board(self, ctx: commands.Context) -> None:

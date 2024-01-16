@@ -1,3 +1,4 @@
+import os
 import discord
 from discord.ext import commands
 
@@ -10,6 +11,10 @@ class ShaitanBot(commands.Bot):
 
 async def run_bot(bot_token: str) -> None:
     bot = ShaitanBot()
-    await bot.load_extension("cogs.fun_service")
+    
+    for file_name in os.listdir('./cogs'):
+        if file_name.endswith('.py'):
+            await bot.load_extension(f"cogs.{file_name[:-3]}")
+
     await bot.start(bot_token)
     
