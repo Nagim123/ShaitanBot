@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-from cogs.fun_service import FunService
 
 class ShaitanBot(commands.Bot):
     def __init__(self) -> None:
@@ -9,8 +8,8 @@ class ShaitanBot(commands.Bot):
         super().__init__('/', case_insensitive=True, intents=intents)
 
 
-async def run_bot() -> None:
+async def run_bot(bot_token: str) -> None:
     bot = ShaitanBot()
     await bot.load_extension("cogs.fun_service")
-    await bot.start("<token>")
+    await bot.start(bot_token)
     

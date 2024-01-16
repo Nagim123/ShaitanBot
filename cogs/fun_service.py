@@ -15,9 +15,9 @@ class FunService(commands.Cog):
     @commands.command()
     async def question(self, ctx: commands.Context) -> None:
         if random() > 0.5:
-            await ctx.reply("yes")
+            await ctx.reply("Да")
         else:
-            await ctx.reply("no")
+            await ctx.reply("Нет")
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(FunService(bot))
