@@ -19,10 +19,11 @@ class PinterestScheduler(commands.Cog):
         self.schedule_cache_folder_path = Config.data()["PINTEREST_BOARD_SCHEDULE_CACHE_FOLDER"]
         self.channel_schedules: dict[int, list[tuple[str, PinterestBoardScheduler]]] = dict()
         self.board_schedulers_count: dict[str, int] = dict()
+        self.__load_all_board_schedulers_from_cache()
     
     @commands.command()
     async def add_pin_board(self, ctx: commands.Context, board_owner: str, board_name: str) -> None:
-        board_unique_name = f"{board_owner}_{board_name}"
+        board_unique_name = f"{board_owner} {board_name}"
         path_to_channel_cache = f"{self.schedule_cache_folder_path}/{ctx.channel.id}"
         path_to_scheduler = f"{path_to_channel_cache}/{board_unique_name}"
         path_to_board = f"{self.board_cache_folder_path}/{board_unique_name}"
@@ -51,7 +52,7 @@ class PinterestScheduler(commands.Cog):
 
     @commands.command()
     async def remove_pin_board(self, ctx: commands.Context, board_owner: str, board_name: str) -> None:
-        board_unique_name = f"{board_owner}_{board_name}"
+        board_unique_name = f"{board_owner} {board_name}"
         path_to_channel_cache = f"{self.schedule_cache_folder_path}/{ctx.channel.id}"
         path_to_scheduler = f"{path_to_channel_cache}/{board_unique_name}"
         path_to_board = f"{self.board_cache_folder_path}/{board_unique_name}"
@@ -78,6 +79,7 @@ class PinterestScheduler(commands.Cog):
         
         self.board_schedulers_count[board_unique_name] -= 1
         if self.board_schedulers_count[board_unique_name] == 0:
+            del self.board_schedulers_count[board_unique_name]
             os.remove(path_to_board)
 
         await ctx.reply(f"Доска {board_name} успешно удалена из данного канала!")
@@ -95,11 +97,27 @@ class PinterestScheduler(commands.Cog):
     async def change_send_time(self, ctx: commands.Context) -> None:
         pass
 
-    def __load_all_board_schedulers(self) -> None:
-        pass
-
-    def __remove_unused_boards(self) -> None:
-        pass
+    def __load_all_board_schedulers_from_cache(self) -> None:
+        boards: dict[str, PinterestBoard] = dict()
+        for board_ID in os.listdir(self.board_cache_folder_path):
+            board_path = self.board_cache_folder_path + '/' + board_ID
+            if os.path.isfile(board_path):
+                board_owner, board_name = board_ID.split(" ")
+                boards[board_ID] = PinterestBoard(board_owner, board_name, board_path)
+                self.board_schedulers_count[board_ID] = 0
+        
+        for channel_name in os.listdir(self.schedule_cache_folder_path):
+            channel_dir_path = self.schedule_cache_folder_path + '/' + channel_name + '/'
+            if os.path.isdir(channel_dir_path):
+                for board_ID in os.listdir(channel_dir_path):
+                    board_path = channel_dir_path + '/' + board_ID
+                    if os.path.isfile(board_path):
+                        channel_id = int(channel_name)
+                        if channel_id in self.channel_schedules:
+                            self.channel_schedules[channel_id].append((board_ID, PinterestBoardScheduler(boards[board_ID], board_path)))
+                        else:
+                            self.channel_schedules[channel_id] = [(board_ID, PinterestBoardScheduler(boards[board_ID], board_path))]
+                        self.board_schedulers_count[board_ID] += 1
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(PinterestScheduler(bot))

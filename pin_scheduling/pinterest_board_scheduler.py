@@ -43,8 +43,8 @@ class PinterestBoardScheduler:
             save_file.write(str(self.__pin_count) + '\n')
             save_file.write(str(self.__current_pin_index) + '\n')
             schedule_str = str(self.__scheduled_pin_indexes[0])
-            for _ in range(1, len(self.__scheduled_pin_indexes)):
-                schedule_str += f', {self.__scheduled_pin_indexes}'
+            for i in range(1, len(self.__scheduled_pin_indexes)):
+                schedule_str += f', {self.__scheduled_pin_indexes[i]}'
             save_file.write(schedule_str + '\n')
     
     def __eq__(self, __value: object) -> bool:
