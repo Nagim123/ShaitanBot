@@ -1,6 +1,8 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
+from pin_scheduling.board_not_found_exception import BoardNotFoundException
+
 import discord
 import traceback
 from discord.ext import commands
@@ -15,7 +17,7 @@ class ErrorHandler(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error: Exception) -> None:
         embed = discord.Embed(color=0xFE676E)
-        
+
         traceback.print_exception(type(error), error, error.__traceback__)
         cm_error = f"An unknown error occurred, sorry"
 

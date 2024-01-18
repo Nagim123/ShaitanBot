@@ -30,7 +30,7 @@ class PinterestBoardScheduler:
         
         self.__save_to_file()
         return parsed_pins[pin_index]
-
+    
     def __load_from_file(self) -> None:
         with open(self.__save_file_path, "r") as save_file:
             data = save_file.read().split('\n')

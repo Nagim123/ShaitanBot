@@ -5,8 +5,11 @@ import os
 
 from discord.ext import commands
 from random import random
-from pinterest_board_parser.pinterest_board import PinterestBoard
-from pin_scheduling.pinterest_board_scheduler import PinterestBoardScheduler
+from pin_scheduling.pinterest_board_pool import PinterestBoardPool
+from pin_scheduling.pinterest_channel_scheduler import PinteresetChannelScheduler
+from pin_scheduling.board_not_found_exception import BoardNotFoundException
+from pin_scheduling.board_already_added_exception import BoardAlreadyAddedException
+
 from config import Config
 
 if TYPE_CHECKING:
@@ -15,109 +18,61 @@ if TYPE_CHECKING:
 class PinterestScheduler(commands.Cog):
     def __init__(self, bot: ShaitanBot) -> None:
         self.bot = bot
-        self.board_cache_folder_path = Config.data()["PINTEREST_BOARD_CACHE_FOLDER"]
+        self.board_pool = PinterestBoardPool()
+        self.channel_schedulers: dict[int, PinteresetChannelScheduler] = dict()
         self.schedule_cache_folder_path = Config.data()["PINTEREST_BOARD_SCHEDULE_CACHE_FOLDER"]
-        self.channel_schedules: dict[int, list[tuple[str, PinterestBoardScheduler]]] = dict()
-        self.board_schedulers_count: dict[str, int] = dict()
+        
         self.__load_all_board_schedulers_from_cache()
     
     @commands.command()
     async def add_pin_board(self, ctx: commands.Context, board_owner: str, board_name: str) -> None:
-        board_unique_name = f"{board_owner} {board_name}"
-        path_to_channel_cache = f"{self.schedule_cache_folder_path}/{ctx.channel.id}"
-        path_to_scheduler = f"{path_to_channel_cache}/{board_unique_name}"
-        path_to_board = f"{self.board_cache_folder_path}/{board_unique_name}"
-
-
-        if os.path.exists(path_to_scheduler):
-            await ctx.reply("Эта доска уже прикрепленна к текущему каналу")
+        board = self.board_pool.link_board(board_owner, board_name)
+        try:
+            if ctx.channel.id in self.channel_schedulers:
+                self.channel_schedulers[ctx.channel.id].add_pin_board(board_owner, board_name, board)
+                return
+            
+            channel_scheduler = PinteresetChannelScheduler(ctx.channel.id, self.board_pool)
+            channel_scheduler.add_pin_board(board_owner, board_name, board)
+            self.channel_schedulers[ctx.channel.id] = channel_scheduler
+        except BoardAlreadyAddedException as e:
+            await ctx.reply(e.get_user_format_error())
             return
-        
-        board = PinterestBoard(board_owner, board_name, cache_file_path=path_to_board)
-        
-        if ctx.channel.id in self.channel_schedules:
-            scheduler = PinterestBoardScheduler(board, path_to_scheduler)
-            self.channel_schedules[ctx.channel.id].append((board_unique_name, scheduler))
-        else:
-            os.mkdir(path_to_channel_cache)
-            scheduler = PinterestBoardScheduler(board, path_to_scheduler)
-            self.channel_schedules[ctx.channel.id] = [(board_unique_name, scheduler)]
-        
-        if not board_unique_name in self.board_schedulers_count:
-            self.board_schedulers_count[board_unique_name] = 1
-        else:
-            self.board_schedulers_count[board_unique_name] += 1
-        
+
         await ctx.reply("Доска успешно добавлена!")
 
     @commands.command()
     async def remove_pin_board(self, ctx: commands.Context, board_owner: str, board_name: str) -> None:
-        board_unique_name = f"{board_owner} {board_name}"
-        path_to_channel_cache = f"{self.schedule_cache_folder_path}/{ctx.channel.id}"
-        path_to_scheduler = f"{path_to_channel_cache}/{board_unique_name}"
-        path_to_board = f"{self.board_cache_folder_path}/{board_unique_name}"
-
-        if not ctx.channel.id in self.channel_schedules:
-            await ctx.reply("В этом канале нет ни одной доски.")
+        if not ctx.channel.id in self.channel_schedulers:
+            await ctx.reply("К этому каналу не прикрепленна ни одна доска.")
             return
         
-        if not os.path.exists(path_to_scheduler):
-            await ctx.reply("Такая доска не прикрепленна к этому каналу.")
+        try:
+            self.channel_schedulers[ctx.channel.id].remove_pin_board(board_owner, board_name)
+            self.board_pool.unlink_board(board_owner, board_name)
+        except BoardNotFoundException as e:
+            await ctx.reply(e.get_user_format_error())
             return
-        
-        scheduler_index = -1
-        for index, scheduler in enumerate(self.channel_schedules[ctx.channel.id]):
-            if scheduler[0] == board_unique_name:
-                scheduler_index = index
-                break
-        self.channel_schedules[ctx.channel.id].pop(scheduler_index)
-        os.remove(path_to_scheduler)
-
-        if len(self.channel_schedules[ctx.channel.id]) == 0:
-            del self.channel_schedules[ctx.channel.id]
-            os.rmdir(path_to_channel_cache)
-        
-        self.board_schedulers_count[board_unique_name] -= 1
-        if self.board_schedulers_count[board_unique_name] == 0:
-            del self.board_schedulers_count[board_unique_name]
-            os.remove(path_to_board)
 
         await ctx.reply(f"Доска {board_name} успешно удалена из данного канала!")
 
     @commands.command()
-    async def show_schedule(self, ctx: commands.Context, a:str, b:str) -> None:
-        print(a)
-        await ctx.reply(f"WHAT {a} {b}")
+    async def show_schedule(self, ctx: commands.Context) -> None:
+        await ctx.reply(f"WHAT TEST")
 
     @commands.command()
     async def change_scheduling(self, ctx: commands.Context) -> None:
-        pass
+        await ctx.reply(f"NOT IMPLEMENTED")
     
     @commands.command()
     async def change_send_time(self, ctx: commands.Context) -> None:
-        pass
+        await ctx.reply(f"NOT IMPLEMENTED")
 
     def __load_all_board_schedulers_from_cache(self) -> None:
-        boards: dict[str, PinterestBoard] = dict()
-        for board_ID in os.listdir(self.board_cache_folder_path):
-            board_path = self.board_cache_folder_path + '/' + board_ID
-            if os.path.isfile(board_path):
-                board_owner, board_name = board_ID.split(" ")
-                boards[board_ID] = PinterestBoard(board_owner, board_name, board_path)
-                self.board_schedulers_count[board_ID] = 0
-        
-        for channel_name in os.listdir(self.schedule_cache_folder_path):
-            channel_dir_path = self.schedule_cache_folder_path + '/' + channel_name + '/'
+        for channel_id in os.listdir(self.schedule_cache_folder_path):
+            channel_dir_path = self.schedule_cache_folder_path + '/' + channel_id + '/'
             if os.path.isdir(channel_dir_path):
-                for board_ID in os.listdir(channel_dir_path):
-                    board_path = channel_dir_path + '/' + board_ID
-                    if os.path.isfile(board_path):
-                        channel_id = int(channel_name)
-                        if channel_id in self.channel_schedules:
-                            self.channel_schedules[channel_id].append((board_ID, PinterestBoardScheduler(boards[board_ID], board_path)))
-                        else:
-                            self.channel_schedules[channel_id] = [(board_ID, PinterestBoardScheduler(boards[board_ID], board_path))]
-                        self.board_schedulers_count[board_ID] += 1
+                self.channel_schedulers[int(channel_id)] = PinteresetChannelScheduler(int(channel_id), self.board_pool)
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(PinterestScheduler(bot))
