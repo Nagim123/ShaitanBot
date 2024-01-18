@@ -5,6 +5,7 @@ import os
 
 from discord.ext import commands
 from random import random
+from pinterest_board_parser.pinterest_board_does_not_exist_exception import PinterestBoardDoesNotExistException
 from pin_scheduling.pinterest_board_pool import PinterestBoardPool
 from pin_scheduling.pinterest_channel_scheduler import PinteresetChannelScheduler
 from pin_scheduling.board_not_found_exception import BoardNotFoundException
@@ -26,8 +27,8 @@ class PinterestScheduler(commands.Cog):
     
     @commands.command()
     async def add_pin_board(self, ctx: commands.Context, board_owner: str, board_name: str) -> None:
-        board = self.board_pool.link_board(board_owner, board_name)
         try:
+            board = self.board_pool.link_board(board_owner, board_name)
             if ctx.channel.id in self.channel_schedulers:
                 self.channel_schedulers[ctx.channel.id].add_pin_board(board_owner, board_name, board)
                 return
@@ -37,6 +38,9 @@ class PinterestScheduler(commands.Cog):
             self.channel_schedulers[ctx.channel.id] = channel_scheduler
         except BoardAlreadyAddedException as e:
             await ctx.reply(e.get_user_format_error())
+            return
+        except PinterestBoardDoesNotExistException:
+            await ctx.reply("Такой доски не существует.")
             return
 
         await ctx.reply("Доска успешно добавлена!")
