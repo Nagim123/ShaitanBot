@@ -31,11 +31,10 @@ class PinterestScheduler(commands.Cog):
             board = self.board_pool.link_board(board_owner, board_name)
             if ctx.channel.id in self.channel_schedulers:
                 self.channel_schedulers[ctx.channel.id].add_pin_board(board_owner, board_name, board)
-                return
-            
-            channel_scheduler = PinteresetChannelScheduler(ctx.channel.id, self.board_pool)
-            channel_scheduler.add_pin_board(board_owner, board_name, board)
-            self.channel_schedulers[ctx.channel.id] = channel_scheduler
+            else:
+                channel_scheduler = PinteresetChannelScheduler(ctx.channel.id, self.board_pool)
+                channel_scheduler.add_pin_board(board_owner, board_name, board)
+                self.channel_schedulers[ctx.channel.id] = channel_scheduler
         except BoardAlreadyAddedException as e:
             await ctx.reply(e.get_user_format_error())
             return
