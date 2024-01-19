@@ -1,1 +1,3 @@
-Pinterest module loaded succesfully!
+2024-01-19 15:24:05,552 [INFO] Pinterest module loaded succesfully!
+2024-01-19 15:24:22,512 [INFO] /add_pin_board 1 2 command was entered
+2024-01-19 15:24:24,906 [INFO] Board 2 was not found

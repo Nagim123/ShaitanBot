@@ -1,7 +1,10 @@
-Initializing board как-это-работает-я-не-понимаю-рандом-какой-то of user amutalapov
-Sending request to PINTEREST API to get board id.
-Parsing response in format of HTML page
-Extracting board id from parsed data
-Loading cached board data from a file
-Loading board from file...
-Board successfully loaded from a file!
+2024-01-19 15:24:03,370 [INFO] Initializing board как-это-работает-я-не-понимаю-рандом-какой-то of user amutalapov
+2024-01-19 15:24:03,370 [INFO] Sending request to PINTEREST API to get board id.
+2024-01-19 15:24:05,523 [INFO] Parsing response in format of HTML page
+2024-01-19 15:24:05,546 [INFO] Extracting board id from parsed data
+2024-01-19 15:24:05,546 [INFO] Loading cached board data from a file
+2024-01-19 15:24:05,546 [INFO] Loading board from file...
+2024-01-19 15:24:05,547 [INFO] Board successfully loaded from a file!
+2024-01-19 15:24:22,512 [INFO] Initializing board 2 of user 1
+2024-01-19 15:24:22,512 [INFO] Sending request to PINTEREST API to get board id.
+2024-01-19 15:24:24,432 [INFO] Parsing response in format of HTML page

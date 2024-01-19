@@ -29,7 +29,6 @@ class PinterestScheduler(commands.Cog):
         self.__channel_schedulers: dict[int, PinteresetChannelScheduler] = dict()
         self.__schedule_cache_folder_path = Config.data()["PINTEREST_BOARD_SCHEDULE_CACHE_FOLDER"]
         self.__logger = logging.getLogger("SchedulingLogger")
-        self.__logger.addHandler(logging.FileHandler("./logs/pin_logger.txt", mode='w', encoding="utf-8"))
 
         self.__load_all_board_schedulers_from_cache()
         self.__send_pins_to_channels_on_time.start()
