@@ -2,6 +2,7 @@ import os
 from random import shuffle, randint
 from pinterest_board_parser.pinterest_board import PinterestBoard
 from pinterest_board_parser.pinterest_pin import PinterestPin
+from pin_scheduling.no_more_pins_exception import NoMorePinsException
 
 class PinterestBoardScheduler:
     def __init__(self, board: PinterestBoard, save_file_path: str) -> None:
@@ -19,12 +20,15 @@ class PinterestBoardScheduler:
 
     def get_next_pin(self) -> PinterestPin:
         if self.__current_pin_index >= len(self.__scheduled_pin_indexes):
-            raise Exception("All pins were shown!")
+            raise NoMorePinsException()
         
         pin_index = self.__scheduled_pin_indexes[self.__current_pin_index]
         parsed_pins = self.__board.get_pins()
         
-        for i in range(self.__pin_count, parsed_pins):
+        print(pin_index)
+        print(self.__pin_count)
+        print(len(parsed_pins))
+        for i in range(self.__pin_count, len(parsed_pins)):
             self.__scheduled_pin_indexes.insert(randint(0, self.__pin_count-1), i)
         self.__current_pin_index += 1
         

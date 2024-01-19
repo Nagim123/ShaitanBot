@@ -6,6 +6,8 @@ class ShaitanBot(commands.Bot):
     def __init__(self) -> None:
         intents = discord.Intents.default()
         intents.message_content = True
+        intents.members = True
+        intents.guilds = True
         super().__init__('/', case_insensitive=True, intents=intents)
 
 
