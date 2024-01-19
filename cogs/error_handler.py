@@ -21,6 +21,9 @@ class ErrorHandler(commands.Cog):
 
         if isinstance(error, commands.CommandNotFound):
             return
+        
+        if isinstance(error, commands.NoPrivateMessage):
+            return
 
         traceback.print_exception(type(error), error, error.__traceback__)
         cm_error = f"If you see this message, that means some exception was not handled."

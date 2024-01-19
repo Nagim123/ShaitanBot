@@ -9,7 +9,9 @@ class ShaitanBot(commands.Bot):
         intents.members = True
         intents.guilds = True
         super().__init__('/', case_insensitive=True, intents=intents)
-        self.change_presence(status=discord.Status.online, activity=discord.Game("EXISTANCE"))
+   
+    async def on_ready(self):
+        await self.change_presence(activity=discord.Game("Геншин импакт 2: Восстание фурри"), status=discord.Status.online)
 
 async def run_bot(bot_token: str) -> None:
     bot = ShaitanBot()
