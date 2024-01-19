@@ -9,7 +9,7 @@ class ShaitanBot(commands.Bot):
         intents.members = True
         intents.guilds = True
         super().__init__('/', case_insensitive=True, intents=intents)
-
+        self.change_presence(status=discord.Status.online, activity=discord.Game("EXISTANCE"))
 
 async def run_bot(bot_token: str) -> None:
     bot = ShaitanBot()
@@ -19,4 +19,3 @@ async def run_bot(bot_token: str) -> None:
             await bot.load_extension(f"cogs.{file_name[:-3]}")
 
     await bot.start(bot_token)
-    
