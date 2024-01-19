@@ -7,9 +7,10 @@ from pin_scheduling.pinterest_board_pool import PinterestBoardPool
 from pin_scheduling.board_not_found_exception import BoardNotFoundException
 from pin_scheduling.board_already_added_exception import BoardAlreadyAddedException
 from pin_scheduling.wrong_scheduling_time_exception import WrongSchedulingTimeException
+from pin_scheduling.no_more_pins_exception import NoMorePinsException
 from config import Config
 from enum import Enum
-from random import randint
+from random import shuffle
 
 class SortModes(Enum):
     RANDOM = "random"
@@ -58,16 +59,26 @@ class PinteresetChannelScheduler:
         for board_unique_name in self.__schedulers:
             scheduler_list.append((board_unique_name, self.__schedulers[board_unique_name]))
         if self.__sort_mode == SortModes.RANDOM:
-            return scheduler_list[randint(0, len(scheduler_list) - 1)][1].get_next_pin()
+            shuffle(scheduler_list)
         elif self.__sort_mode == SortModes.ALHABETIC:
             scheduler_list.sort(key=lambda x: x[0])
-            pin = scheduler_list[self.__current_scheduler_index - 1][1].get_next_pin()
-            self.__current_scheduler_index = (self.__current_scheduler_index + 1) % len(scheduler_list)
-            self.__save_to_file()
-            return pin
+        else:
+            raise Exception(f"Unknown sort mode {self.__sort_mode}")
         
-        raise Exception(f"Unknown sort mode {self.__sort_mode}")
-
+        start_pin_index = self.__current_scheduler_index
+        while True:
+            try:
+                pin = scheduler_list[self.__current_scheduler_index][1].get_next_pin()
+                break
+            except NoMorePinsException:
+                self.__current_scheduler_index = (self.__current_scheduler_index + 1) % len(scheduler_list)
+                if self.__current_scheduler_index == start_pin_index:
+                    raise NoMorePinsException()
+                continue
+        self.__current_scheduler_index = (self.__current_scheduler_index + 1) % len(scheduler_list)
+        self.__save_to_file()
+        return pin
+        
     def change_accept_time_hour(self, new_hour: int) -> None:
         self.__accept_time = datetime.time(new_hour, 0, 0)
         self.__save_to_file()
