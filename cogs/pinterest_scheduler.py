@@ -92,7 +92,6 @@ class PinterestScheduler(commands.Cog):
                 discord_channel = await self.__bot.fetch_channel(channel)
                 await discord_channel.send("Вы просмотрели все пины из всех досок. Добавьте новые)")
             except WrongSchedulingTimeException:
-                print("##")
                 continue
             
     def __load_all_board_schedulers_from_cache(self) -> None:

@@ -54,12 +54,10 @@ class PinteresetChannelScheduler:
     def get_scheduled_pin(self) -> PinterestPin:
         if not datetime.datetime.now().hour == self.__accept_time.hour:
             raise WrongSchedulingTimeException()
-        print("FFF")
         scheduler_list: list[tuple[str, PinterestBoardScheduler]] = []
         for board_unique_name in self.__schedulers:
             scheduler_list.append((board_unique_name, self.__schedulers[board_unique_name]))
         if self.__sort_mode == SortModes.RANDOM:
-            print("DSADSA")
             return scheduler_list[randint(0, len(scheduler_list) - 1)][1].get_next_pin()
         elif self.__sort_mode == SortModes.ALHABETIC:
             scheduler_list.sort(key=lambda x: x[0])

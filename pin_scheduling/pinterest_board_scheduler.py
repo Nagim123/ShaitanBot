@@ -25,9 +25,6 @@ class PinterestBoardScheduler:
         pin_index = self.__scheduled_pin_indexes[self.__current_pin_index]
         parsed_pins = self.__board.get_pins()
         
-        print(pin_index)
-        print(self.__pin_count)
-        print(len(parsed_pins))
         for i in range(self.__pin_count, len(parsed_pins)):
             self.__scheduled_pin_indexes.insert(randint(0, self.__pin_count-1), i)
         self.__current_pin_index += 1
