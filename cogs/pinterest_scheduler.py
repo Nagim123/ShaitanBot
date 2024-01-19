@@ -35,6 +35,7 @@ class PinterestScheduler(commands.Cog):
         self.__logger.info("Pinterest module loaded succesfully!")
     
     @commands.command()
+    @commands.guild_only()
     async def add_pin_board(self, ctx: commands.Context, board_owner: str, board_name: str) -> None:
         """Add board to current channel"""
         self.__logger.info(f"/add_pin_board {board_owner} {board_name} command was entered")
@@ -59,6 +60,7 @@ class PinterestScheduler(commands.Cog):
         await ctx.reply("Доска успешно добавлена!")
 
     @commands.command()
+    @commands.guild_only()
     async def remove_pin_board(self, ctx: commands.Context, board_owner: str, board_name: str) -> None:
         """Remove board from current channel"""
         self.__logger.info(f"/remove_pin_board {board_owner} {board_name} command was entered")
@@ -78,14 +80,17 @@ class PinterestScheduler(commands.Cog):
         await ctx.reply(f"Доска {board_name} успешно удалена из данного канала!")
 
     # @commands.command()
+    # @commands.guild_only()
     # async def show_schedule(self, ctx: commands.Context) -> None:
     #     await ctx.reply(f"NOT IMPLEMENTED")
 
     # @commands.command()
+    # @commands.guild_only()
     # async def change_scheduling(self, ctx: commands.Context, new_scheduling: str) -> None:
     #     await ctx.reply(f"NOT IMPLEMENTED")
     
     @commands.command()
+    @commands.guild_only()
     async def change_send_time(self, ctx: commands.Context, new_hour: int) -> None:
         """Changes time when the bot sends pic or video"""
         self.__logger.info(f"/change_send_time {new_hour} command was entered")

@@ -1,0 +1,5 @@
+{
+    "DISCORD_BOT_TOKEN": "<token>",
+    "PINTEREST_BOARD_CACHE_FOLDER": "./pin_scheduling_data/boards_cache",
+    "PINTEREST_BOARD_SCHEDULE_CACHE_FOLDER": "./pin_scheduling_data/schedulers"
+}
