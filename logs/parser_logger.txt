@@ -1,0 +1,11 @@
+Initializing board b of user a
+Sending request to PINTEREST API to get board id.
+Parsing response in format of HTML page
+Initializing board как-это-работает-я-не-понимаю-рандом-какой-то of user amutalapov
+Sending request to PINTEREST API to get board id.
+Parsing response in format of HTML page
+Extracting board id from parsed data
+Can't find cache file. New one will be created.
+Start parsing new pins!
+Saving board to a file...
+Board successfully saved to a cache file!
