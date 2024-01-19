@@ -19,8 +19,11 @@ class ErrorHandler(commands.Cog):
     async def on_command_error(self, ctx: commands.Context, error: Exception) -> None:
         embed = discord.Embed(color=0xFE676E)
 
+        if isinstance(error, commands.CommandNotFound):
+            return
+
         traceback.print_exception(type(error), error, error.__traceback__)
-        cm_error = f"An unknown error occurred, sorry"
+        cm_error = f"If you see this message, that means some exception was not handled."
 
         embed.description = cm_error
         await ctx.send(embed=embed, delete_after=30, ephemeral=True)

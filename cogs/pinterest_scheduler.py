@@ -92,7 +92,7 @@ class PinterestScheduler(commands.Cog):
         self.__logger.info(f"/change_send_time {new_hour} command was entered")
         if ctx.channel.id in self.__channel_schedulers:
             self.__channel_schedulers[ctx.channel.id].change_accept_time_hour(new_hour)
-            await ctx.reply(f"Время отправки ежедневного пина изменено на {new_hour}:00")
+            await ctx.reply(f"Время отправки ежедневного пина изменена на {new_hour}:00")
             self.__logger.info(f"Send time changed to {new_hour}:00 for channel {ctx.channel.id} successfully!")
             return
         await ctx.reply(f"Добавьте хотя бы 1 доску, чтобы изменять время отправки.")
@@ -106,6 +106,7 @@ class PinterestScheduler(commands.Cog):
                 pin = self.__channel_schedulers[channel].get_scheduled_pin()
                 self.__logger.info(f"Send pin {pin.pin_id} to {channel} channel")
                 discord_channel = await self.__bot.fetch_channel(channel)
+                await discord_channel.send(f"Название:{pin.title}\nДоска:{pin.board_name}")
                 await discord_channel.send(pin.resource_link)
                 self.__logger.info("Send operation was succesfull")
             except NoMorePinsException:

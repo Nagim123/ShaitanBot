@@ -1,7 +1,1 @@
 Pinterest module loaded succesfully!
-/add_pin_board a b command was entered
-Board b was not found
-/add_pin_board amutalapov как-это-работает-я-не-понимаю-рандом-какой-то command was entered
-Board как-это-работает-я-не-понимаю-рандом-какой-то added succesfully
-/change_send_time 15 command was entered
-Send time changed to 15:00 for channel 1021932349140770816 successfully!

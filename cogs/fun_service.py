@@ -14,6 +14,7 @@ class FunService(commands.Cog):
     
     @commands.command()
     async def question(self, ctx: commands.Context) -> None:
+        """Ask a question and get yes/no answer"""
         if random() > 0.5:
             await ctx.reply("Да")
         else:
