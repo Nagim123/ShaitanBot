@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict
 
 import os
 import logging
@@ -26,7 +26,7 @@ class PinterestScheduler(commands.Cog):
     def __init__(self, bot: ShaitanBot) -> None:
         self.__bot = bot
         self.__board_pool = PinterestBoardPool()
-        self.__channel_schedulers: dict[int, PinteresetChannelScheduler] = dict()
+        self.__channel_schedulers: Dict[int, PinteresetChannelScheduler] = dict()
         self.__schedule_cache_folder_path = Config.data()["PINTEREST_BOARD_SCHEDULE_CACHE_FOLDER"]
         self.__logger = logging.getLogger("SchedulingLogger")
 

@@ -1,3 +1,5 @@
+from typing import Tuple, Dict
+
 import os
 from config import Config
 from pinterest_board_parser.pinterest_board import PinterestBoard
@@ -5,7 +7,7 @@ from pinterest_board_parser.pinterest_board import PinterestBoard
 class PinterestBoardPool:
     def __init__(self) -> None:
         self.__board_cache_folder_path = Config.data()["PINTEREST_BOARD_CACHE_FOLDER"]
-        self.__board_pool: dict[str, tuple[PinterestBoard, int]] = dict()
+        self.__board_pool: Dict[str, Tuple[PinterestBoard, int]] = dict()
         self.__load_from_file()
 
     def link_board(self, board_owner: str, board_name: str) -> PinterestBoard:

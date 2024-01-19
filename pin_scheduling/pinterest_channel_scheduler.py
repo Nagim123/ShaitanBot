@@ -1,5 +1,8 @@
 import os
 import datetime
+
+from typing import List, Tuple, Dict
+
 from pinterest_board_parser.pinterest_board import PinterestBoard
 from pinterest_board_parser.pinterest_pin import PinterestPin
 from pin_scheduling.pinterest_board_scheduler import PinterestBoardScheduler
@@ -24,7 +27,7 @@ class PinteresetChannelScheduler:
         self.__current_scheduler_index = 0
         self.__accept_time = datetime.time(8, 0, 0)
         self.__sort_mode = SortModes.RANDOM
-        self.__schedulers: dict[str, PinterestBoardScheduler] = dict()
+        self.__schedulers: Dict[str, PinterestBoardScheduler] = dict()
         if os.path.exists(self.channel_cache_folder_path):
             self.__load_from_file()
     
@@ -55,7 +58,7 @@ class PinteresetChannelScheduler:
     def get_scheduled_pin(self) -> PinterestPin:
         if not datetime.datetime.now().hour == self.__accept_time.hour:
             raise WrongSchedulingTimeException()
-        scheduler_list: list[tuple[str, PinterestBoardScheduler]] = []
+        scheduler_list: List[Tuple[str, PinterestBoardScheduler]] = []
         for board_unique_name in self.__schedulers:
             scheduler_list.append((board_unique_name, self.__schedulers[board_unique_name]))
         if self.__sort_mode == SortModes.RANDOM:
