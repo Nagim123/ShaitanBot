@@ -87,6 +87,11 @@ class PinterestScheduler(commands.Cog):
     # @commands.command()
     # @commands.guild_only()
     # async def change_scheduling(self, ctx: commands.Context, new_scheduling: str) -> None:
+    #     if not ctx.channel.id in self.__channel_schedulers:
+    #         self.__logger.info(f"No boards in channel {ctx.channel.id}")
+    #         await ctx.reply("К этому каналу не прикрепленна ни одна доска.")
+    #         return
+    #     #self.__channel_schedulers[ctx.channel.id]
     #     await ctx.reply(f"NOT IMPLEMENTED")
     
     @commands.command()

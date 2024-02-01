@@ -1,7 +1,0 @@
-2024-01-19 22:21:31,436 [INFO] Initializing board как-это-работает-я-не-понимаю-рандом-какой-то of user amutalapov
-2024-01-19 22:21:31,436 [INFO] Sending request to PINTEREST API to get board id.
-2024-01-19 22:21:33,781 [INFO] Parsing response in format of HTML page
-2024-01-19 22:21:33,803 [INFO] Extracting board id from parsed data
-2024-01-19 22:21:33,803 [INFO] Loading cached board data from a file
-2024-01-19 22:21:33,803 [INFO] Loading board from file...
-2024-01-19 22:21:33,804 [INFO] Board successfully loaded from a file!
