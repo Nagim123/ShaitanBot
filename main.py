@@ -17,5 +17,6 @@ if __name__ == "__main__":
     get_parsing_logger().setLevel(logging.DEBUG)
     logging.getLogger("SchedulingLogger").addHandler(pin_scheduler_file_handler)
     logging.getLogger("SchedulingLogger").setLevel(logging.DEBUG)
+    
     # Run bot
     asyncio.run(run_bot(Config.data()["DISCORD_BOT_TOKEN"]))

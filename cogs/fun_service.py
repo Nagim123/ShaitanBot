@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING
 from discord.ext import commands
 from random import random
 
+import logging
+
 if TYPE_CHECKING:
     from bot import ShaitanBot
 

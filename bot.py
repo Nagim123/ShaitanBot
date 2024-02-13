@@ -8,6 +8,7 @@ class ShaitanBot(commands.Bot):
         intents.message_content = True
         intents.members = True
         intents.guilds = True
+        self.is_talking = False
         super().__init__('/', case_insensitive=True, intents=intents)
    
     async def on_ready(self):
