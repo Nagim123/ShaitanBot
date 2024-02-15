@@ -38,6 +38,10 @@ class PinterestScheduler(commands.Cog):
     @commands.guild_only()
     async def add_pin_board(self, ctx: commands.Context, board_owner: str, board_name: str) -> None:
         """Add board to current channel"""
+        if not ctx.message.author.id == 923862738000830514:
+            ctx.reply("Вам запрещено использовать эту команду")
+            return
+        
         self.__logger.info(f"/add_pin_board {board_owner} {board_name} command was entered")
         try:
             board = self.__board_pool.link_board(board_owner, board_name)
@@ -63,6 +67,10 @@ class PinterestScheduler(commands.Cog):
     @commands.guild_only()
     async def remove_pin_board(self, ctx: commands.Context, board_owner: str, board_name: str) -> None:
         """Remove board from current channel"""
+        if not ctx.message.author.id == 923862738000830514:
+            ctx.reply("Вам запрещено использовать эту команду")
+            return
+        
         self.__logger.info(f"/remove_pin_board {board_owner} {board_name} command was entered")
         if not ctx.channel.id in self.__channel_schedulers:
             self.__logger.info(f"No boards in channel {ctx.channel.id}")
@@ -99,6 +107,10 @@ class PinterestScheduler(commands.Cog):
     async def change_send_time(self, ctx: commands.Context, new_hour: int) -> None:
         """Changes time when the bot sends pic or video"""
         self.__logger.info(f"/change_send_time {new_hour} command was entered")
+        if not ctx.message.author.id == 923862738000830514:
+            ctx.reply("Вам запрещено использовать эту команду")
+            return
+        
         if ctx.channel.id in self.__channel_schedulers:
             self.__channel_schedulers[ctx.channel.id].change_accept_time_hour(new_hour)
             await ctx.reply(f"Время отправки ежедневного пина изменено на {new_hour}:00")
