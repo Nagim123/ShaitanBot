@@ -124,6 +124,7 @@ class PinterestScheduler(commands.Cog):
         self.__logger.info("Time to broadcast pins!")
         for channel in self.__channel_schedulers:
             try:
+                self.__logger.info(f"Trying to find scheduled pin for {channel} channel")
                 pin = self.__channel_schedulers[channel].get_scheduled_pin()
                 self.__logger.info(f"Send pin {pin.pin_id} to {channel} channel")
                 discord_channel = await self.__bot.fetch_channel(channel)
@@ -136,7 +137,16 @@ class PinterestScheduler(commands.Cog):
                 await discord_channel.send("Вы просмотрели все пины из всех досок. Добавьте новые)")
             except WrongSchedulingTimeException:
                 continue
-            
+    
+    # DEBUG FUNCTION
+    @commands.command()
+    @commands.dm_only()
+    async def force_send(self, ctx: commands.Context):
+        if not ctx.message.author.id == 923862738000830514:
+            ctx.reply("Вам запрещено использовать эту команду")
+            return
+        await self.__send_pins_to_channels_on_time()
+
     def __load_all_board_schedulers_from_cache(self) -> None:
         for channel_id in os.listdir(self.__schedule_cache_folder_path):
             channel_dir_path = self.__schedule_cache_folder_path + '/' + channel_id + '/'
